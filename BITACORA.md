@@ -1,7 +1,12 @@
  Bitácora del equipo – TPI Batalla Naval
 
 - 01/11/2026 – Inicio del proyecto
-**Participantes:** [tu nombre y los de tus compañeros]
+**Participantes:**
+  - Ana Laura Mujica
+  - Alenka Silvera
+  - Milagros Castillo
+  - Tiago Ezequiel
+  - Milagros Verón
 
 **Qué se hizo:**
 - Lectura de la consigna del TPI y del escenario Batalla Naval.
