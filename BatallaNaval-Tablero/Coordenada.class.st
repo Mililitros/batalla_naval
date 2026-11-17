@@ -11,3 +11,51 @@ Class {
 	#category : 'BatallaNaval-Tablero',
 	#package : 'BatallaNaval-Tablero'
 }
+
+{ #category : 'instance creation' }
+Coordenada class >> fila: unaFila columna: unaColumna [
+	^ self new setFila: unaFila columna: unaColumna
+
+]
+
+{ #category : 'comparing' }
+Coordenada >> = otraCoordenada [
+	^ self class = otraCoordenada class
+		and: [ fila = otraCoordenada fila and: [ columna = otraCoordenada columna ] ]
+
+]
+
+{ #category : 'accessing' }
+Coordenada >> columna [
+	^columna
+]
+
+{ #category : 'printing' }
+Coordenada >> comoTexto [
+	^ (Character value: 64 + columna) asString , fila printString
+
+]
+
+{ #category : 'accessing' }
+Coordenada >> fila [ 
+	^fila 
+]
+
+{ #category : 'comparing' }
+Coordenada >> hash [
+	^ fila hash bitXor: columna hash
+
+]
+
+{ #category : 'printing' }
+Coordenada >> printOn: unStream [
+	unStream nextPutAll: self comoTexto
+
+]
+
+{ #category : 'initialization' }
+Coordenada >> setFila: unaFila columna: unaColumna [
+	fila := unaFila.
+	columna := unaColumna
+
+]
