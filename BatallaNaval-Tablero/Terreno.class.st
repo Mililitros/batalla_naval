@@ -1,3 +1,6 @@
+"
+Representa el tipo de superficie abstracta que puede tener una casilla del tablero 
+"
 Class {
 	#name : 'Terreno',
 	#superclass : 'Object',
