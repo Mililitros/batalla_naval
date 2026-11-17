@@ -8,6 +8,11 @@ Class {
 	#package : 'BatallaNaval-Flota'
 }
 
+{ #category : 'testing' }
+Submarino >> estaSumergido [
+	^recargaRestante = 0
+]
+
 { #category : 'accessing' }
 Submarino >> tamano [ ^ 3
 ]
