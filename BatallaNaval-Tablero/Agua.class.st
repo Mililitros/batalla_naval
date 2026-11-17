@@ -7,3 +7,8 @@ Class {
 	#category : 'BatallaNaval-Tablero',
 	#package : 'BatallaNaval-Tablero'
 }
+
+{ #category : 'events' }
+Agua >> alUbicarNave: unaNave en: unaCasilla [
+    ^ self
+]

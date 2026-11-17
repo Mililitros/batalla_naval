@@ -10,3 +10,26 @@ Class {
 	#category : 'BatallaNaval-Tablero',
 	#package : 'BatallaNaval-Tablero'
 }
+
+{ #category : 'events' }
+CampoMinado >> alUbicarNave: unaNave en: unaCasilla [
+    explotada := true.
+    unaCasilla recibirDisparo
+]
+
+{ #category : 'tests' }
+CampoMinado >> esCampoMinado [
+    ^ true
+
+]
+
+{ #category : 'tests' }
+CampoMinado >> explotada [
+    ^ explotada
+]
+
+{ #category : 'initialization' }
+CampoMinado >> initialize [
+    super initialize.
+    explotada := false
+]
