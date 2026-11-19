@@ -13,19 +13,18 @@ Class {
 
 { #category : 'events' }
 CampoMinado >> alUbicarNave: unaNave en: unaCasilla [
-    explotada := true.
-    unaCasilla recibirDisparo
+	explotada:= true.
+	unaCasilla recibirDisparo 
 ]
 
-{ #category : 'tests' }
+{ #category : 'events' }
 CampoMinado >> esCampoMinado [
-    ^ true
-
+	^true 
 ]
 
-{ #category : 'tests' }
+{ #category : 'events' }
 CampoMinado >> explotada [
-    ^ explotada
+	^explotada
 ]
 
 { #category : 'initialization' }
