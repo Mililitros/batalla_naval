@@ -71,6 +71,11 @@ Nave >> posiciones [
 ]
 
 { #category : 'impacts' }
+Nave >> puedeSerImpactada [ 
+	^true
+]
+
+{ #category : 'impacts' }
 Nave >> registrarImpactoEn: unaCoordenada [
     (self ocupa: unaCoordenada)
         ifFalse: [ ^ self error: 'La nave no ocupa esa coordenada' ].

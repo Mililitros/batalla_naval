@@ -13,6 +13,11 @@ Submarino >> estaSumergido [
 	^recargaRestante = 0
 ]
 
+{ #category : 'impacts' }
+Submarino >> puedeSerImpactada [ 
+	^self estaSumergido not
+]
+
 { #category : 'accessing' }
 Submarino >> tamano [ ^ 3
 ]
