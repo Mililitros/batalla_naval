@@ -10,11 +10,12 @@ Class {
 
 { #category : 'events' }
 Terreno >> alUbicarNave: unaNave en: unaCasilla [
-    ^ self subclassResponsibility
+	^self subclassResponsibility 
+	
 ]
 
-{ #category : 'tests' }
-Terreno >> esCampoMinado [
-    ^ false
-
+{ #category : 'events' }
+Terreno >> esCampoMinado [ 
+	^false
+	
 ]
