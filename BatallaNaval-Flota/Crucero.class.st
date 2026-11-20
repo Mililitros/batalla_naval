@@ -8,6 +8,13 @@ Class {
 	#package : 'BatallaNaval-Flota'
 }
 
+{ #category : 'initialization' }
+Crucero >> initialize [
+    super initialize.
+    arma := TorpedoHorizontal new
+
+]
+
 { #category : 'accessing' }
 Crucero >> tamano [ ^ 3 
 ]

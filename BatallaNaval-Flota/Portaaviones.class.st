@@ -8,6 +8,13 @@ Class {
 	#package : 'BatallaNaval-Flota'
 }
 
+{ #category : 'initialization' }
+Portaaviones >> initialize [
+    super initialize.
+    arma := BombardeoAereo new
+
+]
+
 { #category : 'accessing' }
 Portaaviones >> tamano [ ^ 5
 ]

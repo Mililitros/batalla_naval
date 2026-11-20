@@ -8,6 +8,13 @@ Class {
 	#package : 'BatallaNaval-Flota'
 }
 
+{ #category : 'initialization' }
+Acorazado >> initialize [
+    super initialize.
+    arma := CanionTurbo new
+
+]
+
 { #category : 'accessing' }
 Acorazado >> tamano [ ^ 4 
 ]

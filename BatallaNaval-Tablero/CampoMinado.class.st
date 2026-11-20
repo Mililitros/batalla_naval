@@ -13,8 +13,9 @@ Class {
 
 { #category : 'events' }
 CampoMinado >> alUbicarNave: unaNave en: unaCasilla [
-	explotada:= true.
-	unaCasilla recibirDisparo 
+    explotada ifTrue: [ ^ self ].
+    explotada := true.
+    unaCasilla recibirDisparo
 ]
 
 { #category : 'events' }

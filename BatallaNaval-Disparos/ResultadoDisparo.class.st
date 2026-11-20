@@ -9,6 +9,12 @@ Class {
 }
 
 { #category : 'testing' }
+ResultadoDisparo >> esBloqueado [
+    ^ false
+
+]
+
+{ #category : 'testing' }
 ResultadoDisparo >> esHundido [
 	^ false
 

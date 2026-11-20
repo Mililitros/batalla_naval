@@ -19,3 +19,13 @@ Terreno >> esCampoMinado [
 	^false
 	
 ]
+
+{ #category : 'as yet unclassified' }
+Terreno >> esIsla [
+    ^ false
+]
+
+{ #category : 'as yet unclassified' }
+Terreno >> permiteColocacion [
+    ^ true
+]

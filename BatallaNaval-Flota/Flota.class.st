@@ -28,13 +28,45 @@ Flota >> agregarNave: unaNave [
 	naves add: unaNave
 ]
 
+{ #category : 'testing' }
+Flota >> avanzarRecargas [
+    naves do: [ :cadaNave | cadaNave avanzarRecarga ]
+
+]
+
 { #category : 'accessing' }
 Flota >> cantidadDeNaves [
 	^naves size
+]
+
+{ #category : 'accessing' }
+Flota >> cantidadDeNavesHundidas [
+    ^ (naves select: [ :cadaNave | cadaNave estaHundida ]) size
 ]
 
 { #category : 'initialization' }
 Flota >> initialize [ 
 	super initialize.
 	naves := OrderedCollection new
+]
+
+{ #category : 'accessing' }
+Flota >> naves [
+    ^ naves
+]
+
+{ #category : 'accessing' }
+Flota >> navesOperativas [
+    ^ naves select: [ :cadaNave | cadaNave estaOperativa ]
+]
+
+{ #category : 'accessing' }
+Flota >> navesQuePuedenAtacar [
+    ^ naves select: [ :cadaNave | cadaNave puedeAtacar ]
+
+]
+
+{ #category : 'testing' }
+Flota >> todasHundidas [
+    ^ naves allSatisfy: [ :cadaNave | cadaNave estaHundida ]
 ]

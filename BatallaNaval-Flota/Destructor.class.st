@@ -8,6 +8,19 @@ Class {
 	#package : 'BatallaNaval-Flota'
 }
 
+{ #category : 'testing' }
+Destructor >> concedeTurnoExtraTras: unosResultados [
+    ^ unosResultados anySatisfy: [ :cadaResultado | cadaResultado esImpacto ]
+
+]
+
+{ #category : 'initialization' }
+Destructor >> initialize [
+    super initialize.
+    arma := Canion new
+
+]
+
 { #category : 'accessing' }
 Destructor >> tamano [ ^ 2 
 ]

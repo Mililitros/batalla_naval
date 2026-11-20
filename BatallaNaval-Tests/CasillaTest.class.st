@@ -40,6 +40,13 @@ CasillaTest >> testDisparoAUnaNaveEsImpacto [
 ]
 
 { #category : 'tests' }
+CasillaTest >> testNoSePuedeColocarDosVecesUnaMina [
+    casilla ubicarMina.
+    self should: [ casilla ubicarMina ] raise: UbicacionInvalida
+
+]
+
+{ #category : 'tests' }
 CasillaTest >> testNoSePuedeDispararDosVecesALaMismaCasilla [
     casilla recibirDisparo.
     self should: [ casilla recibirDisparo ] raise: CasillaYaAtacada
@@ -52,10 +59,33 @@ CasillaTest >> testNoSePuedeOcuparUnaCasillaOcupada [
 ]
 
 { #category : 'tests' }
+CasillaTest >> testNoSePuedeUbicarUnaNaveSobreUnaIsla [
+    casilla ubicarIsla.
+    self should: [ casilla ocuparCon: crucero ] raise: UbicacionInvalida
+]
+
+{ #category : 'tests' }
 CasillaTest >> testSePuedeOcuparConUnaNave [
     casilla ocuparCon: crucero.
     self assert: casilla estaOcupada.
     self assert: casilla nave equals: crucero
+]
+
+{ #category : 'tests' }
+CasillaTest >> testUnBombardeoIgnoraLasIslas [
+    casilla ubicarIsla.
+    self deny: casilla recibirBombardeo esBloqueado.
+    self deny: casilla estaRevelada
+]
+
+{ #category : 'tests' }
+CasillaTest >> testUnDisparoSobreUnaIslaLaRevelaYQuedaBloqueado [
+    | resultado |
+    casilla ubicarIsla.
+    resultado := casilla recibirDisparo.
+    self assert: resultado esBloqueado.
+    self assert: casilla estaRevelada.
+    self deny: casilla estaAtacada
 ]
 
 { #category : 'tests' }
@@ -101,4 +131,13 @@ CasillaTest >> testUnaMinaNoDañaAUnSubmarinoSumergido [
     casilla ubicarMina.
     casilla ocuparCon: submarino.
     self assert: submarino cantidadDeImpactos equals: 0
+]
+
+{ #category : 'tests' }
+CasillaTest >> testUnaMinaSobreUnaIslaRevelaLaIslaYNoSeColoca [
+    casilla ubicarIsla.
+    casilla ubicarMina.
+    self deny: casilla tieneMina.
+    self assert: casilla estaRevelada
+
 ]

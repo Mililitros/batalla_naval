@@ -20,6 +20,13 @@ NaveTest >> setUp [
 ]
 
 { #category : 'tests' }
+NaveTest >> testElDestructorDaTurnoExtraSoloSiAcierta [
+    self assert: (Destructor new concedeTurnoExtraTras: { ResultadoImpacto new }).
+    self deny: (Destructor new concedeTurnoExtraTras: { ResultadoAgua new }).
+    self deny: (Crucero new concedeTurnoExtraTras: { ResultadoImpacto new })
+]
+
+{ #category : 'tests' }
 NaveTest >> testElMismoImpactoNoSeCuentaDosVeces [
     crucero registrarImpactoEn: (Coordenada fila: 3 columna: 3).
     crucero registrarImpactoEn: (Coordenada fila: 3 columna: 3).
