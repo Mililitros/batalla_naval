@@ -19,7 +19,7 @@ Coordenada class >> desdeTexto: unTexto [
     texto := unTexto trimBoth asUppercase.
     texto size < 2
         ifTrue: [ ^ EntradaInvalida new signal: 'Escribí una letra y un número, por ejemplo H8' ].
-    columna := texto first value - 64.
+    columna := texto first asciiValue - 64.
     fila := texto allButFirst asInteger.
     (texto first isLetter and: [ fila notNil ])
         ifFalse: [ ^ EntradaInvalida new signal: 'Escribí una letra y un número, por ejemplo H8' ].

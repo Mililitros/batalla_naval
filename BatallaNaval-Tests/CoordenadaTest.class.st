@@ -19,6 +19,19 @@ CoordenadaTest >> testCoordenadasConDistintosValoresNoSonIguales [
 ]
 
 { #category : 'tests' }
+CoordenadaTest >> testDesdeTexto [
+    self assert: (Coordenada desdeTexto: 'H8') equals: (Coordenada fila: 8 columna: 8).
+    self assert: (Coordenada desdeTexto: ' a24 ') equals: (Coordenada fila: 24 columna: 1)
+
+]
+
+{ #category : 'tests' }
+CoordenadaTest >> testDesdeTextoInvalido [
+    self should: [ Coordenada desdeTexto: '8H' ] raise: EntradaInvalida.
+    self should: [ Coordenada desdeTexto: 'zz' ] raise: EntradaInvalida
+]
+
+{ #category : 'tests' }
 CoordenadaTest >> testDosCoordenadasConLosMismosValoresSonIguales [
 	self 
 		assert: (Coordenada fila: 8 columna: 8)
