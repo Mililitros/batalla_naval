@@ -13,6 +13,21 @@ Class {
 }
 
 { #category : 'instance creation' }
+Coordenada class >> desdeTexto: unTexto [
+
+    | texto columna fila |
+    texto := unTexto trimBoth asUppercase.
+    texto size < 2
+        ifTrue: [ ^ EntradaInvalida new signal: 'Escribí una letra y un número, por ejemplo H8' ].
+    columna := texto first value - 64.
+    fila := texto allButFirst asInteger.
+    (texto first isLetter and: [ fila notNil ])
+        ifFalse: [ ^ EntradaInvalida new signal: 'Escribí una letra y un número, por ejemplo H8' ].
+    ^ self fila: fila columna: columna
+
+]
+
+{ #category : 'instance creation' }
 Coordenada class >> fila: unaFila columna: unaColumna [
 	^ self new setFila: unaFila columna: unaColumna
 

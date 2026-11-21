@@ -182,6 +182,14 @@ Tablero >> validarUbicacion: coordenadas en: unTerritorio ignorando: unaNave [
 ]
 
 { #category : 'accessing' }
+Tablero >> vistaCompleta [
+    ^ (1 to: filas) collect: [ :fila |
+        (1 to: columnas) collect: [ :columna |
+            (self casillaEn: (Coordenada fila: fila columna: columna)) simboloCompleto ] ]
+
+]
+
+{ #category : 'accessing' }
 Tablero >> vistaPara: unTerritorioPropio [
     ^ (1 to: filas) collect: [ :fila |
         (1 to: columnas) collect: [ :columna |

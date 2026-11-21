@@ -13,7 +13,8 @@ Class {
 		'turnoExtraEnCurso',
 		'turnosJugados',
 		'turnosMaximosPorJugador',
-		'azar'
+		'azar',
+		'ultimoAtaque'
 	],
 	#category : 'BatallaNaval-Partida',
 	#package : 'BatallaNaval-Partida'
@@ -40,18 +41,25 @@ Partida class >> jugadores: unosJugadores azar: unRandom [
     ^ self new setJugadores: unosJugadores azar: unRandom; iniciar; yourself
 ]
 
-{ #category : 'accessing' }
+{ #category : 'actions' }
 Partida >> atacarCon: unaNave objetivos: unasCoordenadas [
-    | resultados |
+    | rival origen resultados concedeExtra |
     self validarEstado: #enCurso.
-    self validarNave: unaNave.
+    (jugadorActual flota naves includes: unaNave)
+        ifFalse: [ ^ AccionFueraDeTurno new signal: 'Esa nave no pertenece al jugador actual' ].
+    rival := self jugadorRival.
+    origen := jugadorActual territorio origenDe: unaNave.
     resultados := unaNave
         atacar: unasCoordenadas
-        desde: (jugadorActual territorio origenDe: unaNave)
+        desde: origen
         contra: tablero
-        rival: self jugadorRival territorio.
-    self registrarAtaqueDe: unaNave resultados: resultados.
+        rival: rival territorio.
+    ultimoAtaque := { jugadorActual. unaNave. unasCoordenadas. resultados }.
+    concedeExtra := turnoExtraEnCurso not
+        and: [ unaNave concedeTurnoExtraTras: resultados ].
+    self finalizarTurnoConExtra: concedeExtra.
     ^ resultados
+
 ]
 
 { #category : 'private' }
@@ -97,6 +105,25 @@ Partida >> estaFinalizada [
 { #category : 'accessing' }
 Partida >> estado [ 
 	^estado
+]
+
+{ #category : 'private' }
+Partida >> finalizarTurnoConExtra: unBooleano [
+
+    self jugadorRival perdio ifTrue: [
+        estado := #finalizada.
+        ^ self ].
+    unBooleano ifTrue: [
+        turnoExtraEnCurso := true.
+        ^ self ].
+    turnoExtraEnCurso := false.
+    jugadorActual avanzarRecargas.
+    turnosJugados := turnosJugados + 1.
+    turnosJugados >= (turnosMaximosPorJugador * 2) ifTrue: [
+        estado := #finalizada.
+        ^ self ].
+    jugadorActual := self jugadorRival
+
 ]
 
 { #category : 'accessing' }
@@ -164,16 +191,24 @@ Partida >> jugadorRival [
 ]
 
 { #category : 'accessing' }
+Partida >> jugadores [
+    ^ jugadores
+
+]
+
+{ #category : 'accessing' }
 Partida >> navesHundidasPor: unJugador [
     ^ (self rivalDe: unJugador) flota cantidadDeNavesHundidas
 
 
 ]
 
-{ #category : 'accessing' }
+{ #category : 'actions' }
 Partida >> pasarTurno [
     self validarEstado: #enCurso.
-    self terminarTurno
+    ultimoAtaque := nil.
+    self finalizarTurnoConExtra: false
+
 ]
 
 { #category : 'accessing' }
@@ -187,17 +222,24 @@ Partida >> registrarAtaqueDe: unaNave resultados: unosResultados [
         ifFalse: [ self terminarTurno ]
 ]
 
-{ #category : 'accessing' }
+{ #category : 'actions' }
 Partida >> reubicar: unaNave desde: unaCoordenada orientacion: unaOrientacion [
+    | rival origen |
     self validarEstado: #enCurso.
-    self validarNave: unaNave.
-    (unaNave
-        puedeReubicarseDesde: (jugadorActual territorio origenDe: unaNave)
-        contra: tablero
-        rival: self jugadorRival territorio)
-        ifFalse: [ ^ AccionFueraDeTurno new signal: 'La nave no cumple las condiciones para reubicarse' ].
-    tablero reubicarNave: unaNave desde: unaCoordenada orientacion: unaOrientacion en: jugadorActual territorio.
-    self terminarTurno
+    (jugadorActual flota naves includes: unaNave)
+        ifFalse: [ ^ AccionFueraDeTurno new signal: 'Esa nave no pertenece al jugador actual' ].
+    rival := self jugadorRival.
+    origen := jugadorActual territorio origenDe: unaNave.
+    (unaNave puedeReubicarseDesde: origen contra: tablero rival: rival territorio)
+        ifFalse: [ ^ UbicacionInvalida new signal: 'La nave no puede reubicarse en este momento' ].
+    tablero
+        reubicarNave: unaNave
+        desde: unaCoordenada
+        orientacion: unaOrientacion
+        en: jugadorActual territorio.
+    ultimoAtaque := nil.
+    self finalizarTurnoConExtra: false
+
 ]
 
 { #category : 'accessing' }
@@ -262,12 +304,41 @@ Partida >> ubicarMinaEn: unaCoordenada [
 ]
 
 { #category : 'actions' }
+Partida >> ubicarMinasAlAzar [
+    | humano |
+    self validarEstado: #colocandoMinas.
+    humano := self jugadorHumano.
+    tablero
+        ubicarMinasAlAzar: humano minasRestantes
+        en: (self rivalDe: humano) territorio
+        azar: azar.
+    humano minasRestantes timesRepeat: [ humano usarMina ].
+    self avanzarFaseSiCorresponde
+
+]
+
+{ #category : 'actions' }
 Partida >> ubicarNave: unaNave desde: unaCoordenada orientacion: unaOrientacion [
     | humano |
     self validarEstado: #colocandoNaves.
     humano := self jugadorHumano.
     tablero ubicarNave: unaNave desde: unaCoordenada orientacion: unaOrientacion en: humano territorio.
     self avanzarFaseSiCorresponde
+]
+
+{ #category : 'actions' }
+Partida >> ubicarNavesAlAzar [
+    self validarEstado: #colocandoNaves.
+    self jugadorHumano navesSinUbicar do: [ :cadaNave |
+        tablero ubicarAlAzar: cadaNave en: self jugadorHumano territorio azar: azar ].
+    self avanzarFaseSiCorresponde
+
+]
+
+{ #category : 'accessing' }
+Partida >> ultimoAtaque [
+    ^ ultimoAtaque
+
 ]
 
 { #category : 'validating' }
