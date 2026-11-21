@@ -1,3 +1,7 @@
+"
+Arma del Submarino que recorre en línea recta su columna hacia el campo rival hasta chocar con una nave, una isla o el borde
+
+"
 Class {
 	#name : 'Torpedo',
 	#superclass : 'Arma',
@@ -15,6 +19,12 @@ Torpedo >> alcance [
 Torpedo >> cantidadDeObjetivos [
     ^ 0
 
+]
+
+{ #category : 'calculating' }
+Torpedo >> coordenadasAfectadasPor: unasCoordenadas en: unTablero rival: unTerritorio [
+    "El torpedo no apunta a casillas fijas: recorre su columna y se detiene al chocar, por eso redefine disparar:desde:contra:rival: y esta operación no se usa"
+    ^ #()
 ]
 
 { #category : 'accessing' }

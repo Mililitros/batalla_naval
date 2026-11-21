@@ -1,3 +1,7 @@
+"
+Representa a un participante de la partida, administrando su flota, territorio asignado y cantidad de minas disponibles
+
+"
 Class {
 	#name : 'Jugador',
 	#superclass : 'Object',
@@ -41,6 +45,12 @@ Jugador >> initialize [
 { #category : 'accessing' }
 Jugador >> minasRestantes [
     ^ minasRestantes
+
+]
+
+{ #category : 'accessing' }
+Jugador >> navesOperativas [
+    ^ flota navesOperativas
 
 ]
 

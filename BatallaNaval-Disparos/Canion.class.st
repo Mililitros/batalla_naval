@@ -1,3 +1,7 @@
+"
+Arma básica del Destructor de corto alcance que impacta una única casilla y concede un disparo extra si acierta
+
+"
 Class {
 	#name : 'Canion',
 	#superclass : 'Arma',

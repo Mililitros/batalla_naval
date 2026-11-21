@@ -1,3 +1,7 @@
+"
+Representa un obstáculo de tierra firme en el tablero que impide ubicar naves encima y bloquea la trayectoria de los disparos
+
+"
 Class {
 	#name : 'Isla',
 	#superclass : 'Terreno',
@@ -5,17 +9,17 @@ Class {
 	#package : 'BatallaNaval-Tablero'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'positioning' }
 Isla >> alUbicarNave: unaNave en: unaCasilla [
     ^ self
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'testing' }
 Isla >> esIsla [
     ^ true
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'testing' }
 Isla >> permiteColocacion [
     ^ false
 ]

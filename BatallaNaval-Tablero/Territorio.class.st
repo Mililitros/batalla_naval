@@ -1,3 +1,7 @@
+"
+Define las filas que pertenecen a un bando y calcula la dirección de ataque y el origen de disparo de sus naves
+
+"
 Class {
 	#name : 'Territorio',
 	#superclass : 'Object',

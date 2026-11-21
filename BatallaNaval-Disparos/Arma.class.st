@@ -1,3 +1,7 @@
+"
+Clase abstracta que define el comportamiento base, alcance y validación de objetivos para los distintos tipos de disparo de las naves
+
+"
 Class {
 	#name : 'Arma',
 	#superclass : 'Object',

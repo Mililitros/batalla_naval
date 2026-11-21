@@ -1,3 +1,7 @@
+"
+Arma del Acorazado de largo alcance que impacta en patrón de cruz sobre la casilla elegida y sus cuatro adyacentes
+
+"
 Class {
 	#name : 'CanionTurbo',
 	#superclass : 'Arma',

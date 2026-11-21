@@ -1,3 +1,7 @@
+"
+Arma del Portaaviones con alcance global que permite impactar dos casillas independientes ignorando el bloqueo de las islas
+
+"
 Class {
 	#name : 'BombardeoAereo',
 	#superclass : 'Arma',

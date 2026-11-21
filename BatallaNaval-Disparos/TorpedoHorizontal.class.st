@@ -1,3 +1,6 @@
+"
+Arma del Crucero de alcance medio que impacta tres casillas horizontales contiguas 
+"
 Class {
 	#name : 'TorpedoHorizontal',
 	#superclass : 'Arma',
