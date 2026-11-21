@@ -33,6 +33,17 @@ JugadorIA >> coordenadasDisponiblesDesde: unOrigen alcance: unAlcance en: unTabl
     ^ resultado
 ]
 
+{ #category : 'actions' }
+JugadorIA >> ejecutarPlan: unPlan en: unaPartida [
+	| resultados |
+	unPlan esAtaque ifTrue: [
+		resultados := unaPartida atacarCon: unPlan nave objetivos: unPlan objetivos.
+		^ self recordarImpactoDe: resultados ].
+	ultimoImpacto := nil.
+	unPlan esReubicacion ifTrue: [ ^ self reubicar: unPlan nave en: unaPartida ].
+	unPlan tipo = #pasar ifTrue: [ ^ unaPartida pasarTurno ]
+]
+
 { #category : 'private' }
 JugadorIA >> elegirObjetivosPara: unaNave en: unTablero rival: unTerritorio [
     | cantidad origen disponibles objetivos primero candidato |
@@ -64,19 +75,7 @@ JugadorIA >> esAutomatico [
 
 { #category : 'actions' }
 JugadorIA >> jugarTurno: unaPartida [
-    | candidatas nave objetivos resultados |
-    unaPartida estaFinalizada ifTrue: [ ^ self ].
-    candidatas := self
-        navesConObjetivosEn: unaPartida tablero
-        rival: (unaPartida rivalDe: self) territorio.
-    candidatas isEmpty ifTrue: [ ^ self reubicarOPasar: unaPartida ].
-    nave := candidatas atRandom: azar.
-    objetivos := self
-        elegirObjetivosPara: nave
-        en: unaPartida tablero
-        rival: (unaPartida rivalDe: self) territorio.
-    resultados := unaPartida atacarCon: nave objetivos: objetivos.
-    self recordarImpactoDe: resultados
+	^ self ejecutarPlan: (self planearTurno: unaPartida) en: unaPartida
 ]
 
 { #category : 'private' }
@@ -90,6 +89,31 @@ JugadorIA >> navesConObjetivosEn: unTablero rival: unTerritorio [
                 alcance: cadaNave arma alcance
                 en: unTablero
                 rival: unTerritorio) size >= cadaNave arma cantidadDeObjetivos ] ]
+]
+
+{ #category : 'actions' }
+JugadorIA >> planearReubicacionEn: unaPartida [
+	| candidatas |
+	candidatas := flota navesOperativas select: [ :cadaNave |
+		cadaNave
+			puedeReubicarseDesde: (territorio origenDe: cadaNave)
+			contra: unaPartida tablero
+			rival: (unaPartida rivalDe: self) territorio ].
+	candidatas isEmpty ifTrue: [ ^ PlanDeTurno pasar ].
+	^ PlanDeTurno reubicar: (candidatas atRandom: azar)
+]
+
+{ #category : 'actions' }
+JugadorIA >> planearTurno: unaPartida [
+	| candidatas nave rivalTerritorio |
+	unaPartida estaFinalizada ifTrue: [ ^ PlanDeTurno nada ].
+	rivalTerritorio := (unaPartida rivalDe: self) territorio.
+	candidatas := self navesConObjetivosEn: unaPartida tablero rival: rivalTerritorio.
+	candidatas isEmpty ifTrue: [ ^ self planearReubicacionEn: unaPartida ].
+	nave := candidatas atRandom: azar.
+	^ PlanDeTurno
+		ataque: nave
+		objetivos: (self elegirObjetivosPara: nave en: unaPartida tablero rival: rivalTerritorio)
 ]
 
 { #category : 'actions' }
@@ -111,25 +135,21 @@ JugadorIA >> recordarImpactoDe: unosResultados [
 ]
 
 { #category : 'private' }
+JugadorIA >> reubicar: unaNave en: unaPartida [
+	1 to: 100 do: [ :intento |
+		[ unaPartida
+			reubicar: unaNave
+			desde: (unaPartida tablero coordenadaAlAzarEn: territorio azar: azar)
+			orientacion: (#(#horizontal #vertical) atRandom: azar).
+		  ^ self ]
+			on: UbicacionInvalida
+			do: [ :error | error return ] ].
+	unaPartida pasarTurno
+]
+
+{ #category : 'private' }
 JugadorIA >> reubicarOPasar: unaPartida [
-    | candidatas nave |
-    ultimoImpacto := nil.
-    candidatas := flota navesOperativas select: [ :cadaNave |
-        cadaNave
-            puedeReubicarseDesde: (territorio origenDe: cadaNave)
-            contra: unaPartida tablero
-            rival: (unaPartida rivalDe: self) territorio ].
-    candidatas isEmpty ifTrue: [ ^ unaPartida pasarTurno ].
-    nave := candidatas atRandom: azar.
-    1 to: 100 do: [ :intento |
-        [ unaPartida
-            reubicar: nave
-            desde: (unaPartida tablero coordenadaAlAzarEn: territorio azar: azar)
-            orientacion: (#(#horizontal #vertical) atRandom: azar).
-          ^ self ]
-            on: UbicacionInvalida
-            do: [ :error | error return ] ].
-    unaPartida pasarTurno
+	^ self ejecutarPlan: (self planearReubicacionEn: unaPartida) en: unaPartida
 ]
 
 { #category : 'initialization' }
