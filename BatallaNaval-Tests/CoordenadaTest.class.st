@@ -55,6 +55,13 @@ CoordenadaTest >> testDesdeTextoInvalido [
 ]
 
 { #category : 'tests' }
+CoordenadaTest >> testDesdeTextoRechazaCaracteresDespuesDelNumero [
+
+	self should: [ Coordenada desdeTexto: 'H8X' ] raise: EntradaInvalida.
+	self should: [ Coordenada desdeTexto: 'H-3' ] raise: EntradaInvalida
+]
+
+{ #category : 'tests' }
 CoordenadaTest >> testDesdeTextoRechazaUnTextoConElNumeroPrimero [
 	self
 		should: [ Coordenada desdeTexto: '8H' ]

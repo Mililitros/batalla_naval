@@ -15,15 +15,13 @@ Class {
 { #category : 'instance creation' }
 Coordenada class >> desdeTexto: unTexto [
 
-    | texto columna fila |
-    texto := unTexto trimBoth asUppercase.
-    texto size < 2
-        ifTrue: [ ^ EntradaInvalida new signal: 'Escribí una letra y un número, por ejemplo H8' ].
-    columna := texto first asciiValue - 64.
-    fila := texto allButFirst asInteger.
-    (texto first isLetter and: [ fila notNil ])
-        ifFalse: [ ^ EntradaInvalida new signal: 'Escribí una letra y un número, por ejemplo H8' ].
-    ^ self fila: fila columna: columna
+	| texto |
+	texto := unTexto trimBoth asUppercase.
+	(texto size >= 2
+		and: [ (texto first between: $A and: $Z)
+			and: [ texto allButFirst allSatisfy: [ :cadaCaracter | cadaCaracter isDigit ] ] ])
+		ifFalse: [ ^ EntradaInvalida new signal: 'Escribí una letra y un número, por ejemplo H8' ].
+	^ self fila: texto allButFirst asInteger columna: texto first asciiValue - 64
 
 ]
 
