@@ -19,6 +19,46 @@ CoordenadaTest >> testCoordenadasConDistintosValoresNoSonIguales [
 ]
 
 { #category : 'tests' }
+CoordenadaTest >> testDesdeTextoAceptaMinusculasYEspaciosAlrededor [
+	self
+		assert: (Coordenada desdeTexto: ' h8 ')
+		equals: (Coordenada fila: 8 columna: 8)
+]
+
+{ #category : 'tests' }
+CoordenadaTest >> testDesdeTextoEsLaInversaDeComoTexto [
+	| coordenada |
+	coordenada := Coordenada fila: 20 columna: 7.
+	self
+		assert: (Coordenada desdeTexto: coordenada comoTexto)
+		equals: coordenada
+]
+
+{ #category : 'tests' }
+CoordenadaTest >> testDesdeTextoInterpretaLaLetraComoColumnaYElNumeroComoFila [
+	self
+		assert: (Coordenada desdeTexto: 'C5')
+		equals: (Coordenada fila: 5 columna: 3)
+]
+
+{ #category : 'tests' }
+CoordenadaTest >> testDesdeTextoRechazaUnTextoConElNumeroPrimero [
+	self
+		should: [ Coordenada desdeTexto: '8H' ]
+		raise: EntradaInvalida
+]
+
+{ #category : 'tests' }
+CoordenadaTest >> testDesdeTextoRechazaUnTextoSinLetraONumero [
+	self
+		should: [ Coordenada desdeTexto: '' ]
+		raise: EntradaInvalida.
+	self
+		should: [ Coordenada desdeTexto: 'H' ]
+		raise: EntradaInvalida
+]
+
+{ #category : 'tests' }
 CoordenadaTest >> testDosCoordenadasConLosMismosValoresSonIguales [
 	self 
 		assert: (Coordenada fila: 8 columna: 8)
