@@ -89,14 +89,26 @@ Lapiz class >> elipse: unCentro rx: unRx ry: unRy en: unCanvas ancho: unAncho co
 
 { #category : 'fuentes' }
 Lapiz class >> fuenteCuerpo: unosPuntos [
-	fuentes isNil ifTrue: [ fuentes := Dictionary new ].
-	^ fuentes at: #cuerpo -> unosPuntos ifAbsentPut: [ LogicalFont familyName: 'Segoe Print' pointSize: unosPuntos ]
+
+    | tamano |
+    tamano := unosPuntos + 3.
+    fuentes ifNil: [ fuentes := Dictionary new ].
+    ^ fuentes
+        at: #cuerpo -> tamano
+        ifAbsentPut: [ LogicalFont familyName: StandardFonts defaultFont familyName pointSize: tamano ]
+
+
 ]
 
 { #category : 'fuentes' }
 Lapiz class >> fuenteTitulo: unosPuntos [
-	fuentes isNil ifTrue: [ fuentes := Dictionary new ].
-	^ fuentes at: #titulo -> unosPuntos ifAbsentPut: [ LogicalFont familyName: 'Segoe Script' pointSize: unosPuntos ]
+    | tamano |
+    tamano := unosPuntos + 4.
+    fuentes ifNil: [ fuentes := Dictionary new ].
+    ^ fuentes
+        at: #titulo -> tamano
+        ifAbsentPut: [ LogicalFont familyName: StandardFonts defaultFont familyName pointSize: tamano ]
+
 ]
 
 { #category : 'colores' }

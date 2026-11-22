@@ -94,13 +94,19 @@ VentanaBatallaNaval >> armarBotones [
 
 { #category : 'background' }
 VentanaBatallaNaval >> cargarFondo [
-	^ [ | archivo |
-		archivo := self archivoDeFondo.
-		archivo isNil
-			ifTrue: [ false ]
-			ifFalse: [ (PNGReadWriter formFromStream: archivo binaryReadStream) scaledToSize: self extent ] ]
-		on: Error
-		do: [ :error | false ]
+    RecursoFondo formularioDelFondo
+        ifNotNil: [ :forma | ^ forma magnify: forma boundingBox by: self extent / forma extent smoothing: 2 ].
+    ^ [ self archivoDeFondo
+        ifNil: [ false ]
+        ifNotNil: [ :archivo |
+
+            | forma |
+            forma := PNGReadWriter formFromStream: archivo binaryReadStream.
+            forma magnify: forma boundingBox by: self extent / forma extent smoothing: 2 ] ]
+        on: Error
+        do: [ :error | false ]
+
+
 ]
 
 { #category : 'drawing' }
@@ -118,16 +124,19 @@ VentanaBatallaNaval >> dibujarCabeceraEn: unCanvas [
 	Lapiz caja: ((o x + 640) @ (o y + 14) extent: 330 @ 40) en: unCanvas relleno: (Lapiz papelClaro alpha: 0.6) semilla: 21.
 	Lapiz
 		textoCentrado: controlador textoFase en: unCanvas
-		rect: ((o x + 640) @ (o y + 24) extent: 330 @ 22)
-		fuente: (Lapiz fuenteCuerpo: 11) color: Lapiz grafito
+		rect: ((o x + 640) @ (o y + 20) extent: 330 @ 30)
+		fuente: (Lapiz fuenteCuerpo: 16) color: Lapiz grafito
 ]
 
 { #category : 'drawing' }
 VentanaBatallaNaval >> dibujarFondoEn: unCanvas [
-	fondo isNil ifTrue: [ fondo := self cargarFondo ].
-	unCanvas fillRectangle: bounds color: Lapiz papel.
-	fondo == false ifTrue: [ ^ self ].
-	[ unCanvas image: fondo at: bounds origin ] on: Error do: [ :error | nil ]
+    fondo ifNil: [ fondo := self cargarFondo ].
+    unCanvas fillRectangle: bounds color: Lapiz papel.
+    fondo == false ifTrue: [ ^ self ].
+    fondo extent = self extent
+        ifFalse: [ fondo := self cargarFondo ].
+    unCanvas drawImage: fondo at: bounds origin
+
 ]
 
 { #category : 'drawing' }
