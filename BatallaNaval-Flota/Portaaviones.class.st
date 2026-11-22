@@ -18,3 +18,8 @@ Portaaviones >> initialize [
 { #category : 'accessing' }
 Portaaviones >> tamano [ ^ 5
 ]
+
+{ #category : 'accessing' }
+Portaaviones >> turnosDeRecarga [ 
+	^4
+]

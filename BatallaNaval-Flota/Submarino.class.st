@@ -45,6 +45,6 @@ Submarino >> tamano [ ^ 3
 
 { #category : 'accessing' }
 Submarino >> turnosDeRecarga [
-    ^ 5
+    ^7
 
 ]

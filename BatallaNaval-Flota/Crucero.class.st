@@ -18,3 +18,8 @@ Crucero >> initialize [
 { #category : 'accessing' }
 Crucero >> tamano [ ^ 3 
 ]
+
+{ #category : 'accessing' }
+Crucero >> turnosDeRecarga [ 
+	^4
+]

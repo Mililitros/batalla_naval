@@ -18,3 +18,8 @@ Acorazado >> initialize [
 { #category : 'accessing' }
 Acorazado >> tamano [ ^ 4 
 ]
+
+{ #category : 'accessing' }
+Acorazado >> turnosDeRecarga [
+	^5
+]
