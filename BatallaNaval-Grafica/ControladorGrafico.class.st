@@ -563,7 +563,6 @@ ControladorGrafico >> mostrarAtaqueDe: unJugador nave: unaNave celdas: unasCelda
 		ifTrue: [ #alerta ]
 		ifFalse: [ unJugador esAutomatico ifTrue: [ #rival ] ifFalse: [ #mia ] ].
 	self anotar: unJugador nombre , ': ' , unaNave class name asString , ' - ' , textoResultado , '.' estilo: estilo.
-	self sonarCon: clasif.
 	^ clasif
 ]
 
