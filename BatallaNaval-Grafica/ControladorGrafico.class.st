@@ -52,12 +52,6 @@ ControladorGrafico >> abrir [
 	ventana abrir
 ]
 
-{ #category : 'actions' }
-ControladorGrafico >> alternarSonido [
-	sonidoActivo := sonidoActivo not.
-	self cambio
-]
-
 { #category : 'texts' }
 ControladorGrafico >> anotar: unTexto estilo: unEstilo [
 	bitacora addFirst: unTexto -> unEstilo.
@@ -885,17 +879,6 @@ ControladorGrafico >> seleccion [
 	^ seleccion
 ]
 
-{ #category : 'attack' }
-ControladorGrafico >> sonarCon: unaClasificacion [
-	sonidoActivo ifFalse: [ ^ self ].
-	[ Beeper beep ] on: Error do: [ :error | nil ]
-]
-
-{ #category : 'accessing' }
-ControladorGrafico >> sonidoActivo [
-	^ sonidoActivo
-]
-
 { #category : 'actions' }
 ControladorGrafico >> terminarJuego [
 	self puedeTerminar ifFalse: [ ^ self ].
@@ -1012,7 +995,7 @@ ControladorGrafico >> textoPieDe: unLado [
 
 { #category : 'attack' }
 ControladorGrafico >> tipoDeEfectoEn: unaCasilla [
-	"Qué pasó en la casilla después del disparo, mirando el tablero (el agua no trae coordenada en los resultados)."
+	"Qué pasó en la casilla después del disparo, mirando el tablero (el agua no trae coordenada en los resultados)"
 	unaCasilla terreno esIsla ifTrue: [ ^ unaCasilla estaRevelada ifTrue: [ #isla ] ifFalse: [ #agua ] ].
 	(unaCasilla estaAtacada and: [ unaCasilla nave notNil ]) ifFalse: [ ^ #agua ].
 	^ unaCasilla nave estaHundida ifTrue: [ #hundido ] ifFalse: [ #impacto ]

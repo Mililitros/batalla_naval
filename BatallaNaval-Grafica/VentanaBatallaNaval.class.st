@@ -84,7 +84,6 @@ VentanaBatallaNaval >> armarBotones [
 		{ [ 'Naves al azar' ]. [ controlador puedeNavesAlAzar ]. [ false ]. [ controlador navesAlAzar ] }.
 		{ [ controlador rotuloDemo ]. [ true ]. [ controlador demo ]. [ controlador iniciarDemo ] }.
 		{ [ controlador rotuloTerminar ]. [ controlador puedeTerminar ]. [ false ]. [ controlador terminarJuego ] }.
-		{ [ 'Sonido: ' , (controlador sonidoActivo ifTrue: [ 'sí' ] ifFalse: [ 'no' ]) ]. [ true ]. [ controlador sonidoActivo ]. [ controlador alternarSonido ] }.
 		{ [ controlador rotuloNueva ]. [ true ]. [ false ]. [ controlador nuevaPartida ] } }.
 	definiciones doWithIndex: [ :d :i |
 		| boton |
