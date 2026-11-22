@@ -31,7 +31,7 @@ Tablero >> cantidadDeCasillas [
 
 { #category : 'accessing' }
 Tablero >> cantidadDeIslasEn: unTerritorio [
-    ^ (casillas select: [ :c | (unTerritorio incluye: c coordenada) and: [ c terreno esIsla ] ]) size
+	^ (self tamanosDeIslasEn: unTerritorio) size
 ]
 
 { #category : 'accessing' }
@@ -82,16 +82,53 @@ Tablero >> filas [
 
 ]
 
+{ #category : 'private' }
+Tablero >> formaDeIslaDeTamano: unTamano desde: unInicio azar: unRandom [
+	"Hace crecer la isla de a una casilla pegada a las anteriores, así queda siempre conectada."
+	| casillasDeLaIsla vecinas |
+	casillasDeLaIsla := OrderedCollection with: unInicio.
+	[ casillasDeLaIsla size < unTamano ] whileTrue: [
+		vecinas := OrderedCollection new.
+		casillasDeLaIsla do: [ :cadaCoordenada |
+			(self vecinasOrtogonalesDe: cadaCoordenada) do: [ :cadaVecina |
+				(casillasDeLaIsla includes: cadaVecina) ifFalse: [ vecinas add: cadaVecina ] ] ].
+		casillasDeLaIsla add: (vecinas atRandom: unRandom) ].
+	^ casillasDeLaIsla
+]
+
 { #category : 'positioning' }
 Tablero >> generarIslas: cantidad en: unTerritorio azar: unRandom [
-    | colocadas |
-    colocadas := 0.
-    [ colocadas < cantidad ] whileTrue: [
-        | casilla |
-        casilla := self casillaEn: (self coordenadaAlAzarEn: unTerritorio azar: unRandom).
-        casilla terreno esIsla ifFalse: [
-            casilla ubicarIsla.
-            colocadas := colocadas + 1 ] ]
+	"Ubica 'cantidad' islas de 3 o 4 casillas conectadas dentro del territorio, sin que se toquen entre sí."
+	| colocadas intentos |
+	colocadas := 0.
+	intentos := 0.
+	[ colocadas < cantidad and: [ intentos < 1000 ] ] whileTrue: [
+		intentos := intentos + 1.
+		(self intentarUbicarIslaEn: unTerritorio azar: unRandom)
+			ifTrue: [ colocadas := colocadas + 1 ] ]
+]
+
+{ #category : 'positioning' }
+Tablero >> intentarUbicarIslaEn: unTerritorio azar: unRandom [
+	| forma |
+	forma := self
+		formaDeIslaDeTamano: ((3 to: 4) atRandom: unRandom)
+		desde: (self coordenadaAlAzarEn: unTerritorio azar: unRandom)
+		azar: unRandom.
+	(self puedeUbicarIsla: forma en: unTerritorio) ifFalse: [ ^ false ].
+	forma do: [ :cadaCoordenada | self ubicarIslaEn: cadaCoordenada ].
+	^ true
+]
+
+{ #category : 'private' }
+Tablero >> puedeUbicarIsla: unaForma en: unTerritorio [
+	"Entra en el tablero y en el territorio, no pisa otra isla y no toca a ninguna (ni en diagonal)."
+	^ unaForma allSatisfy: [ :cadaCoordenada |
+		(unTerritorio incluye: cadaCoordenada) and: [
+			(self coordenadaValida: cadaCoordenada) and: [
+				(self casillaEn: cadaCoordenada) terreno esIsla not and: [
+					(self vecinasDe: cadaCoordenada) allSatisfy: [ :cadaVecina |
+						(unaForma includes: cadaVecina) or: [ (self casillaEn: cadaVecina) terreno esIsla not ] ] ] ] ] ]
 ]
 
 { #category : 'positioning' }
@@ -117,6 +154,28 @@ Tablero >> setFilas: cantidadDeFilas columnas: cantidadDeColumnas [
             coordenada := Coordenada fila: fila columna: columna.
             casillas at: coordenada put: (Casilla coordenada: coordenada) ] ]
 
+]
+
+{ #category : 'accessing' }
+Tablero >> tamanosDeIslasEn: unTerritorio [
+	"Cantidad de casillas de cada isla del territorio (una isla es un grupo de casillas conectadas)."
+	| pendientes tamanos |
+	pendientes := (casillas select: [ :c | (unTerritorio incluye: c coordenada) and: [ c terreno esIsla ] ]) keys asOrderedCollection.
+	tamanos := OrderedCollection new.
+	[ pendientes isEmpty ] whileFalse: [
+		| frontera tamano |
+		frontera := OrderedCollection with: pendientes removeFirst.
+		tamano := 0.
+		[ frontera isEmpty ] whileFalse: [
+			| actual |
+			actual := frontera removeFirst.
+			tamano := tamano + 1.
+			(self vecinasOrtogonalesDe: actual) do: [ :cadaVecina |
+				(pendientes includes: cadaVecina) ifTrue: [
+					pendientes remove: cadaVecina.
+					frontera add: cadaVecina ] ] ].
+		tamanos add: tamano ].
+	^ tamanos
 ]
 
 { #category : 'positioning' }
@@ -179,6 +238,30 @@ Tablero >> validarUbicacion: coordenadas en: unTerritorio ignorando: unaNave [
         casilla := self casillaEn: cadaCoordenada.
         (casilla permiteColocacion or: [ unaNave notNil and: [ casilla nave == unaNave ] ])
             ifFalse: [ ^ UbicacionInvalida new signal: 'No se puede ubicar en ', cadaCoordenada comoTexto ] ]
+]
+
+{ #category : 'private' }
+Tablero >> vecinasDe: unaCoordenada [
+	"Las 8 casillas que rodean a la coordenada (las que están dentro del tablero)."
+	| vecinas |
+	vecinas := OrderedCollection new.
+	-1 to: 1 do: [ :deltaFila |
+		-1 to: 1 do: [ :deltaColumna |
+			(deltaFila = 0 and: [ deltaColumna = 0 ]) ifFalse: [
+				| candidata |
+				candidata := Coordenada fila: unaCoordenada fila + deltaFila columna: unaCoordenada columna + deltaColumna.
+				(self coordenadaValida: candidata) ifTrue: [ vecinas add: candidata ] ] ] ].
+	^ vecinas
+]
+
+{ #category : 'private' }
+Tablero >> vecinasOrtogonalesDe: unaCoordenada [
+	^ {
+		Coordenada fila: unaCoordenada fila - 1 columna: unaCoordenada columna.
+		Coordenada fila: unaCoordenada fila + 1 columna: unaCoordenada columna.
+		Coordenada fila: unaCoordenada fila columna: unaCoordenada columna - 1.
+		Coordenada fila: unaCoordenada fila columna: unaCoordenada columna + 1 }
+			select: [ :cadaCoordenada | self coordenadaValida: cadaCoordenada ]
 ]
 
 { #category : 'accessing' }

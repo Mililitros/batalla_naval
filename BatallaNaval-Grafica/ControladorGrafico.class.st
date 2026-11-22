@@ -66,7 +66,8 @@ ControladorGrafico >> anotar: unTexto estilo: unEstilo [
 
 { #category : 'accessing' }
 ControladorGrafico >> atacante [
-	^ atacante
+	"Solo devuelve la nave atacante si la persona puede saber dónde está (es suya o es la demostración)."
+	^ (atacante notNil and: [ self naveVisible: atacante ]) ifTrue: [ atacante ] ifFalse: [ nil ]
 ]
 
 { #category : 'accessing' }
@@ -287,7 +288,9 @@ ControladorGrafico >> faseIaApuntar [
 	miraAfectadas := self celdasDe: nave objetivos: plan objetivos dueno: jugador.
 	nave arma cantidadDeObjetivos = 0
 		ifTrue: [
-			jugada agregarPaso: 'Apunta por la columna ' , (Character value: 64 + (jugador territorio origenDe: nave) columna) asString , '.' ]
+			jugada agregarPaso: ((self naveVisible: nave)
+				ifTrue: [ 'Apunta por la columna ' , (Character value: 64 + (jugador territorio origenDe: nave) columna) asString , '.' ]
+				ifFalse: [ 'Prepara un torpedo.' ]) ]
 		ifFalse: [
 			jugada agregarPaso: 'Apunta a ' , (', ' join: (plan objetivos collect: [ :cadaCoordenada | cadaCoordenada comoTexto ])) , '.' ].
 	self programar: #faseIaDisparar en: 1500
@@ -320,7 +323,7 @@ ControladorGrafico >> faseIaElegir [
 	nave := plan nave.
 	plan esAtaque ifTrue: [
 		atacante := nave.
-		jugada agregarPaso: 'Elige el ' , nave class name asString , ' de ' , (self origenTextoDe: nave dueno: jugador) , ' con ' , (self nombreDeArma: nave arma) , '.'.
+		jugada agregarPaso: 'Elige el ' , nave class name asString , (self textoOrigenVisibleDe: nave dueno: jugador) , ' con ' , (self nombreDeArma: nave arma) , '.'.
 		^ self programar: #faseIaApuntar en: 1200 ].
 	plan esReubicacion ifTrue: [
 		atacante := nave.
@@ -387,7 +390,7 @@ ControladorGrafico >> filasFueraDeAlcance [
 	| nave dueno rivalTerritorio origen alcance |
 	nave := self naveEnCurso.
 	(nave isNil or: [ nave estaUbicada not or: [ nave estaHundida ] ]) ifTrue: [ ^ #() ].
-	(atacante notNil and: [ plan notNil and: [ plan esAtaque not ] ]) ifTrue: [ ^ #() ].
+	(self atacante notNil and: [ plan notNil and: [ plan esAtaque not ] ]) ifTrue: [ ^ #() ].
 	dueno := self duenoDe: nave.
 	rivalTerritorio := (partida rivalDe: dueno) territorio.
 	origen := dueno territorio origenDe: nave.
@@ -572,8 +575,8 @@ ControladorGrafico >> mostrarAtaqueDe: unJugador nave: unaNave celdas: unasCelda
 
 { #category : 'drawing support' }
 ControladorGrafico >> naveEnCurso [
-	"La nave cuyo alcance se muestra: la que apunta la computadora o la elegida por la persona."
-	atacante notNil ifTrue: [ ^ atacante ].
+	"La nave cuyo alcance se muestra: la que apunta la computadora (solo si es visible) o la elegida por la persona."
+	self atacante notNil ifTrue: [ ^ self atacante ].
 	^ (self esTurnoHumano and: [ modo = #atacar ]) ifTrue: [ seleccion ] ifFalse: [ nil ]
 ]
 
@@ -585,6 +588,12 @@ ControladorGrafico >> naveParaPie: unLado [
 		(casilla nave notNil and: [ demo or: [ unLado = #propio or: [ casilla estaRevelada ] ] ])
 			ifTrue: [ ^ casilla nave ] ].
 	^ (unLado = #propio and: [ demo not ]) ifTrue: [ seleccion ] ifFalse: [ nil ]
+]
+
+{ #category : 'accessing' }
+ControladorGrafico >> naveVisible: unaNave [
+	"Las naves de la computadora no se señalan ni se ubican en pantalla durante una partida contra la persona."
+	^ demo or: [ (self duenoDe: unaNave) == self humano ]
 ]
 
 { #category : 'actions' }
@@ -980,6 +989,13 @@ ControladorGrafico >> textoInstruccion [
 	seleccion isNil ifTrue: [ ^ 'Tu turno: elegí una nave tocándola en la tabla o en tu tablero.' ].
 	seleccion arma cantidadDeObjetivos = 0 ifTrue: [ ^ 'Esta arma sale por su columna: presioná ¡Fuego!.' ].
 	^ 'Tocá ' , (seleccion arma cantidadDeObjetivos - objetivos size) printString , ' casilla(s) del campo enemigo.'
+]
+
+{ #category : 'texts' }
+ControladorGrafico >> textoOrigenVisibleDe: unaNave dueno: unJugador [
+	^ (self naveVisible: unaNave)
+		ifTrue: [ ' de ' , (self origenTextoDe: unaNave dueno: unJugador) ]
+		ifFalse: [ '' ]
 ]
 
 { #category : 'texts' }
