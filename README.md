@@ -2,10 +2,11 @@
 TP integrador (5ª Instancia de Evaluación) de Paradigmas de Programación, UTN FRRe. Juego de Batalla Naval de un jugador contra la IA, desarrollado en Smalltalk (Pharo) con Programación Orientada a Objetos.
 ## Requisitos: 
 •	Pharo (versión usada: 12)
+
 o	Desde Pharo Launcher:
-1-	Apretar el botón New en la esquina izquierda
-2-	En la columna izquierda apretar Deprecated distributions
-3-	Elegir Pharo 12.0 – 64bit
+1. 	Apretar el botón New en la esquina izquierda
+2. En la columna izquierda apretar Deprecated distributions
+3. Elegir Pharo 12.0 – 64bit
 
 •	Git
 ## Cómo cargar el código
